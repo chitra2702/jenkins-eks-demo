@@ -1,3 +1,4 @@
+
 pipeline {
 
     agent any
@@ -18,7 +19,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-                docker build -t ${ECR_REPO}:${IMAGE_TAG} .
+                docker build -t ${ECR_REPO}:${IMAGE_TAG} ./app
                 '''
             }
         }
@@ -54,10 +55,10 @@ pipeline {
                   --region ${AWS_REGION} \
                   --name ${EKS_CLUSTER}
 
-                sed "s|IMAGE_URI|${IMAGE_URI}|g" deployment.yaml | \
+                sed "s|IMAGE_URI|${IMAGE_URI}|g" app/deployment.yaml | \
                 kubectl apply -f -
 
-                kubectl apply -f service.yaml
+                kubectl apply -f app/service.yaml
                 '''
             }
         }
